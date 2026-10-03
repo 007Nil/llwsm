@@ -330,6 +330,43 @@ a straightforward extension.
 - In Docker, host network monitoring requires `network_mode: host`.
 - Docker stats are sampled for at most 32 running containers per refresh.
 
+## Development and releasing
+
+Workflow for making updates or enhancements:
+
+```bash
+# 1. Build, vet, test
+go build ./...
+go vet ./...
+go test ./...
+
+# 2. Bump the version in internal/version/version.go (e.g. 0.1.0 -> 0.1.1)
+
+# 3. Cross-build the release binaries (static, stripped)
+for arch in amd64 arm64; do
+  CGO_ENABLED=0 GOOS=linux GOARCH=$arch \
+    go build -trimpath -ldflags "-s -w" -o dist/sysmon-linux-$arch ./cmd/sysmon
+done
+# armv7: CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=7 ...
+
+# 4. Publish a new GitHub release (assets feed the one-line installer,
+#    which always follows /releases/latest/)
+git add -A && git commit -m "..."
+git push
+gh release create v0.1.1 dist/sysmon-linux-amd64 dist/sysmon-linux-arm64 \
+  --title "sysmon v0.1.1" --notes "Changelog..."
+```
+
+After step 4, targets update with one command:
+
+```bash
+curl -fsSLo sysmon https://github.com/007Nil/llwsm/releases/latest/download/sysmon-linux-arm64 && chmod +x sysmon && ./sysmon --version
+```
+
+Docker images are not versioned from releases; rebuild with
+`docker compose build` (or the buildx cross-build documented above) after
+tagging.
+
 ## Testing
 
 ```bash
