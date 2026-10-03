@@ -1,0 +1,21 @@
+services:
+  sysmon:
+    build: .
+    image: llwsm/sysmon:latest
+    container_name: sysmon
+    restart: unless-stopped
+    command: ["sysmon", "--root", "/host", "--listen", "0.0.0.0:8090"]
+    ports:
+      - "8090:8090"
+    volumes:
+      # Read-only host root: /host/proc, /host/sys and host mount points
+      # (for example /host/mnt/music) become visible inside the container.
+      # /proc inside the container reflects the container itself, so this
+      # mount is required for host monitoring.
+      - /:/host:ro
+      # Optional Docker integration (container list and stats):
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+    # To monitor host network interfaces and traffic instead of the
+    # container's own, use host networking. In that case remove the
+    # "ports" block above (they conflict with network_mode: host):
+    # network_mode: host

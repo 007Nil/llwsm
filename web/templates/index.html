@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sysmon</title>
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<header class="top">
+	<div class="title">
+		<h1 id="hostname">loading&hellip;</h1>
+		<div class="sub" id="meta"></div>
+	</div>
+	<div class="status" id="status">
+		<span class="dot"></span>
+		<span id="status-text">CONNECTING</span>
+	</div>
+</header>
+<main class="grid">
+	<section class="card">
+		<h2>CPU</h2>
+		<div class="big" id="cpu-usage">N/A</div>
+		<div class="bar"><div class="fill" id="cpu-bar"></div></div>
+		<div class="row" id="cpu-cores"></div>
+		<div class="row small" id="cpu-load"></div>
+		<div class="row small" id="cpu-model"></div>
+		<div class="cores" id="cpu-percore"></div>
+	</section>
+	<section class="card">
+		<h2>Memory</h2>
+		<div class="big" id="mem-big">N/A</div>
+		<div class="bar"><div class="fill" id="mem-bar"></div></div>
+		<div class="row"><span id="mem-percent"></span><span id="mem-available"></span></div>
+		<div class="row small" id="swap"></div>
+		<div class="row small" id="uptime"></div>
+	</section>
+	<section class="card wide">
+		<h2>Storage</h2>
+		<div id="storage"><div class="row small">N/A</div></div>
+	</section>
+	<section class="card wide">
+		<h2>Network</h2>
+		<div id="network"><div class="row small">N/A</div></div>
+	</section>
+	<section class="card">
+		<h2>Temperature</h2>
+		<div id="sensors"><div class="row small">N/A</div></div>
+	</section>
+	<section class="card">
+		<h2>Containers</h2>
+		<div id="containers"><div class="row small">N/A</div></div>
+	</section>
+	<section class="card wide">
+		<h2>Services</h2>
+		<div id="services"><div class="row small">no services configured</div></div>
+	</section>
+</main>
+<script>window.SYSMON = { version: "{{.Version}}", interval: {{.IntervalSeconds}} };</script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

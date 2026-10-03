@@ -1,0 +1,15 @@
+[Unit]
+Description=LLWSM - lightweight Linux system monitor
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/sysmon --config /etc/sysmon/config.yaml
+Restart=on-failure
+RestartSec=2
+# Binds to 127.0.0.1:8090 by default. For LAN access use:
+# ExecStart=/usr/local/bin/sysmon --config /etc/sysmon/config.yaml --listen 0.0.0.0:8090
+# No authentication is implemented; only expose it on a trusted network.
+
+[Install]
+WantedBy=multi-user.target

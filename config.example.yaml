@@ -1,0 +1,88 @@
+# sysmon configuration. Every key is optional; sensible defaults are built in.
+#
+# Config file locations checked, in order:
+#   1. path given with --config
+#   2. $SYSMON_CONFIG
+#   3. /etc/sysmon/config.yaml
+#   4. ./config.yaml
+#
+# No config file at all is fine: sysmon starts with defaults.
+
+# Host filesystem root. Keep "/" on a bare-metal install.
+# When running inside Docker with the host root mounted read-only at /host,
+# set this to /host so collectors read /host/proc and /host/sys.
+root: /
+
+server:
+  host: 127.0.0.1
+  port: 8090
+
+monitor:
+  # How often the collectors run and the dashboard refreshes.
+  # 1s-2s is recommended.
+  interval: 2s
+
+storage:
+  # Filesystem types that are not shown on the dashboard.
+  ignored_filesystems:
+    - proc
+    - sysfs
+    - tmpfs
+    - devtmpfs
+    - devpts
+    - mqueue
+    - cgroup
+    - cgroup2
+    - securityfs
+    - pstore
+    - efivarfs
+    - bpf
+    - debugfs
+    - tracefs
+    - fusectl
+    - configfs
+    - ramfs
+    - autofs
+    - binfmt_misc
+    - nsfs
+    - selinuxfs
+    - rootfs
+    # squashfs (for example snap images) is read-only and always reports
+    # itself as full; remove this line to display such mounts anyway.
+    - squashfs
+    # hugetlbfs has no real capacity
+    - hugetlbfs
+
+health:
+  # Percent-based thresholds. A value of 0 disables that check.
+  cpu:
+    warning: 80
+    critical: 95
+  memory:
+    warning: 85
+    critical: 95
+  swap:
+    warning: 50
+    critical: 80
+  storage:
+    warning: 85
+    critical: 95
+
+docker:
+  # Docker integration is optional; sysmon works without it.
+  socket_path: /var/run/docker.sock
+
+# Services to monitor.
+#   type: process  -> matches a substring in /proc/<pid>/comm
+#   type: http     -> reports down on connection failure or HTTP 4xx/5xx
+services:
+  - name: Pi-hole
+    type: process
+    match: pihole
+  - name: Mopidy
+    type: process
+    match: mopidy
+  - name: Web
+    type: http
+    url: http://127.0.0.1:8080
+    timeout: 3s
