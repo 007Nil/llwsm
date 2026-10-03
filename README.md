@@ -217,7 +217,22 @@ assumed or used by sysmon:
 # cron:    @reboot /usr/local/bin/sysmon --config /etc/sysmon/config.yaml
 ```
 
-### Deploying to a target device (e.g. a phone)
+### One-command install on the target (prebuilt binaries, no Docker, no Go)
+
+Releases ship statically linked binaries. On the target machine (ARM64):
+
+```bash
+curl -fsSLo sysmon https://github.com/007Nil/llwsm/releases/latest/download/sysmon-linux-arm64 \
+  && chmod +x sysmon && ./sysmon --listen 0.0.0.0:8090
+```
+
+x86_64: replace the asset name with `sysmon-linux-amd64`.
+
+This is the recommended way to run sysmon on a phone or any machine where
+building Docker images is awkward — no toolchain, no Docker, no
+cross-architecture surprises.
+
+### Building your own binary for a target device
 
 1. Cross-compile on your dev machine (pure Go, no cgo — trivial):
 
